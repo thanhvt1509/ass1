@@ -4,12 +4,13 @@ import Square from "./square"
 const Board = () => {
     const [game, setGame] = useState([null, null, null, null, null, null, null, null, null])
     const [player, setPlayer] = useState(true)
-
+    const [previousGame, setPreviousGame] = useState(null)
     const handlePlay = (position) => {
         const winner = checkWinner();
         if (winner) {
             return;
         }
+        setPreviousGame([...game]);
         const newGame = game.map((g, index) => {
             if (position === index) {
                 return player ? "X" : "O"
@@ -45,6 +46,13 @@ const Board = () => {
         setGame([null, null, null, null, null, null, null, null, null]);
         setPlayer(true);
     };
+    const undo = () => {
+        if (previousGame) { // kiểm tra nếu có trạng thái trước đó
+            setGame(previousGame); // khôi phục lại trạng thái của game
+            setPreviousGame(null); // xóa trạng thái trước đó
+            setPlayer(!player); // đổi lượt chơi
+        }
+    }
 
     return <>
         <h2>Winner is: {checkWinner()}</h2>
@@ -60,6 +68,9 @@ const Board = () => {
             <Square value={game[8]} handlePlay={() => handlePlay(8)} />
         </div>
         <button onClick={resetGame}>Reset</button>
+        <button onClick={undo}>
+            Undo
+        </button>
     </>
 }
 
