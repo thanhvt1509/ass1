@@ -7,6 +7,7 @@ const Board = () => {
     const [previousGame, setPreviousGame] = useState(null)
     const handlePlay = (position) => {
         const winner = checkWinner();
+        // console.log(winner);
         if (winner) {
             return;
         }
@@ -36,7 +37,19 @@ const Board = () => {
         for (let i = 0; i < listWin.length; i++) {
             const [p1, p2, p3] = listWin[i]
             if (game[p1] === game[p2] && game[p2] === game[p3]) {
+                // return listWin[i]
                 return game[p1]
+            }
+        }
+        return null
+    }
+
+    const playerWin = (game) => {
+        for (let i = 0; i < listWin.length; i++) {
+            const [p1, p2, p3] = listWin[i]
+            if (game[p1] === game[p2] && game[p2] === game[p3]) {
+                return listWin[i]
+                // return game[p1]
             }
         }
         return null
@@ -53,11 +66,25 @@ const Board = () => {
             setPlayer(!player); // đổi lượt chơi
         }
     }
-
-    return <>
+    const winner = playerWin(game)
+    return <div>
         <h2>Winner is: {checkWinner()}</h2>
         <div className="grid grid-cols-3 gap-2">
-            <Square value={game[0]} handlePlay={() => handlePlay(0)} />
+            {game.map((item, index) => {
+                const squareStyle =
+                    item === "X" ? "text-[#545454]" : item === "O" ? "text-[#F2EBD3]" : "";
+                const winningStyle =
+                    winner && winner.includes(index) ? "animate-pulse" : "";
+                return (
+                    <Square
+                        key={index}
+                        value={item}
+                        className={`${squareStyle} ${winningStyle}`}
+                        handlePlay={() => handlePlay(index)}
+                    />
+                );
+            })}
+            {/* <Square value={game[0]} handlePlay={() => handlePlay(0)} />
             <Square value={game[1]} handlePlay={() => handlePlay(1)} />
             <Square value={game[2]} handlePlay={() => handlePlay(2)} />
             <Square value={game[3]} handlePlay={() => handlePlay(3)} />
@@ -65,13 +92,16 @@ const Board = () => {
             <Square value={game[5]} handlePlay={() => handlePlay(5)} />
             <Square value={game[6]} handlePlay={() => handlePlay(6)} />
             <Square value={game[7]} handlePlay={() => handlePlay(7)} />
-            <Square value={game[8]} handlePlay={() => handlePlay(8)} />
+            <Square value={game[8]} handlePlay={() => handlePlay(8)} /> */}
         </div>
-        <button onClick={resetGame}>Reset</button>
-        <button onClick={undo}>
-            Undo
-        </button>
-    </>
+        <div className="grid grid-cols-2 gap-2">
+            <button onClick={resetGame}>Reset</button>
+            <button onClick={undo}>
+                Undo
+            </button>
+
+        </div>
+    </div>
 }
 
 export default Board
